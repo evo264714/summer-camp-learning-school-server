@@ -164,7 +164,58 @@ async function run() {
       res.send(result);
     })
 
-    
+    //--------------------------------------------------------------------------------------------------------------------
+
+
+    // Update class status
+    app.patch('/classes/:classId/status', async (req, res) => {
+      const { classId } = req.params;
+      const { status } = req.body;
+
+      try {
+        const updatedClass = await classCollection.findOneAndUpdate(
+          { _id: ObjectId(classId) },
+          { $set: { status } },
+          { returnOriginal: false }
+        );
+
+        if (updatedClass.value) {
+          res.json(updatedClass.value);
+        } else {
+          res.status(404).json({ error: 'Class not found' });
+        }
+      } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+
+    // Send feedback to instructor
+    app.patch('/classes/:classId/feedback', async (req, res) => {
+      const { classId } = req.params;
+      const { feedback } = req.body;
+
+      try {
+        const updatedClass = await classCollection.findOneAndUpdate(
+          { _id: ObjectId(classId) },
+          { $set: { feedback } },
+          { returnOriginal: false }
+        );
+
+        if (updatedClass.value) {
+          res.json(updatedClass.value);
+        } else {
+          res.status(404).json({ error: 'Class not found' });
+        }
+      } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+
+
+
+
+    //--------------------------------------------------------------------------------------------------------------------
+
 
     //Single user class collection apis
     app.post('/singleuserclass', async (req, res) => {
