@@ -164,57 +164,37 @@ async function run() {
       res.send(result);
     })
 
-    //--------------------------------------------------------------------------------------------------------------------
-
 
     // Update class status
-    app.patch('/classes/:classId/status', async (req, res) => {
-      const { classId } = req.params;
-      const { status } = req.body;
-
+    app.put('/classes/:id/status', async (req, res) => {
       try {
-        const updatedClass = await classCollection.findOneAndUpdate(
-          { _id: ObjectId(classId) },
-          { $set: { status } },
-          { returnOriginal: false }
-        );
+        const { id } = req.params;
+        const { status } = req.body;
 
-        if (updatedClass.value) {
-          res.json(updatedClass.value);
-        } else {
-          res.status(404).json({ error: 'Class not found' });
-        }
+        await classCollection.updateOne({ _id: new ObjectId(id) }, { $set: { status } });
+
+        res.status(200).json({ message: 'Class status updated successfully' });
       } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
+        console.error('Failed to update class status', error);
+        res.status(500).json({ error: 'Failed to update class status' });
       }
     });
 
-    // Send feedback to instructor
-    app.patch('/classes/:classId/feedback', async (req, res) => {
-      const { classId } = req.params;
-      const { feedback } = req.body;
-
+    // Update class feedback
+    app.put('/classes/:id/feedback', async (req, res) => {
       try {
-        const updatedClass = await classCollection.findOneAndUpdate(
-          { _id: ObjectId(classId) },
-          { $set: { feedback } },
-          { returnOriginal: false }
-        );
+        const { id } = req.params;
+        const { feedback } = req.body;
 
-        if (updatedClass.value) {
-          res.json(updatedClass.value);
-        } else {
-          res.status(404).json({ error: 'Class not found' });
-        }
+        await classCollection.updateOne({ _id: new ObjectId(id) }, { $set: { feedback } });
+
+        res.status(200).json({ message: 'Class feedback updated successfully' });
       } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
+        console.error('Failed to update class feedback', error);
+        res.status(500).json({ error: 'Failed to update class feedback' });
       }
     });
 
-
-
-
-    //--------------------------------------------------------------------------------------------------------------------
 
 
     //Single user class collection apis
