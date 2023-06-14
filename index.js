@@ -230,6 +230,21 @@ async function run() {
 
 
     //Payment
+    app.get('/payments/:email', async (req, res) => {
+      const email = req.params.email
+      const query = { email: email }
+      const result = await paymentCollection.find(query).toArray()
+      res.send(result)
+    })
+
+    app.get('/payments/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const options = { sort: { date: -1 } }; // Sort by date in descending order
+      const result = await paymentCollection.find(query, options).toArray();
+      res.send(result);
+    });
+
     app.post('/create-payment-intent', verifyJWT, async (req, res) => {
       const { price } = req.body;
       const amount = price * 100;
