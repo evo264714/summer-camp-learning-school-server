@@ -237,10 +237,25 @@ async function run() {
       res.send(result)
     })
 
+    app.put('/payments/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const updatedDoc = {
+        $inc: {
+          availableSeats: -1,
+          enrolledStudents: 1
+        }
+
+      }
+      const options = { returnOriginal: false }
+      const result = await classCollection.findOneAndUpdate(query, updatedDoc, options)
+      res.send(result)
+    })
+
     app.get('/payments/:email', async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
-      const options = { sort: { date: -1 } }; // Sort by date in descending order
+      const options = { sort: { date: -1 } };
       const result = await paymentCollection.find(query, options).toArray();
       res.send(result);
     });
