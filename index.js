@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY)
 const port = process.env.PORT || 5000
 
 //middleware
@@ -47,6 +48,7 @@ async function run() {
     const instructorCollection = client.db("summerDb").collection("instructor");
     const classCollection = client.db("summerDb").collection("class")
     const singleUserClassCollection = client.db("summerDb").collection("singleUserClass")
+    const paymentCollection = client.db("summerDb").collection("payments")
 
     app.post('/jwt', (req, res) => {
       const user = req.body;
@@ -227,6 +229,27 @@ async function run() {
     })
 
 
+    //Payment
+    app.post('/create-payment-intent', verifyJWT, async (req, res) => {
+      const { price } = req.body;
+      const amount = price * 100;
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: 'usd',
+        payment_method_types: ['card']
+      })
+
+      res.send({
+        clientSecret: paymentIntent.client_secret
+      })
+    })
+
+    app.post('/payments', verifyJWT, async (req, res) => {
+      const payment = req.body;
+      const result = await paymentCollection.insertOne(payment)
+      res.send(result)
+    })
 
 
     // Send a ping to confirm a successful connection
