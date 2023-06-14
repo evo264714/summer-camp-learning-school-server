@@ -42,7 +42,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const usersCollection = client.db("summerDb").collection("users");
     const instructorCollection = client.db("summerDb").collection("instructor");
@@ -243,12 +243,11 @@ async function run() {
       const updatedDoc = {
         $inc: {
           availableSeats: -1,
-          enrolledStudents: +1
+          enrolledStudents: 1
         }
 
       }
-      const options = { returnOriginal: false }
-      const result = await classCollection.findOneAndUpdate(query, updatedDoc, options)
+      const result = await classCollection.findOneAndUpdate(query, updatedDoc)
       res.send(result)
     })
 
