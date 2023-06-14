@@ -243,7 +243,7 @@ async function run() {
       const updatedDoc = {
         $inc: {
           availableSeats: -1,
-          enrolledStudents: 1
+          enrolledStudents: +1
         }
 
       }
