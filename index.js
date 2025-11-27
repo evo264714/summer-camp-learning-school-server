@@ -494,6 +494,36 @@ async function run() {
       }
     });
 
+    // Remove Admin Role
+app.patch('/users/remove-admin/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { role: 'student' } }
+    );
+    res.send(result);
+  } catch (error) {
+    console.error('Error removing admin role:', error);
+    res.status(500).send({ error: true, message: 'Failed to remove admin role' });
+  }
+});
+
+// Remove Instructor Role
+app.patch('/users/remove-instructor/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { role: 'student' } }
+    );
+    res.send(result);
+  } catch (error) {
+    console.error('Error removing instructor role:', error);
+    res.status(500).send({ error: true, message: 'Failed to remove instructor role' });
+  }
+});
+
     // Single User Class
     app.post('/singleuserclass', async (req, res) => {
       const result = await singleUserClassCollection.insertOne(req.body);
